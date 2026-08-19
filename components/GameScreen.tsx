@@ -272,7 +272,7 @@ export function GameScreen({ mode, customPuzzle }: GameScreenProps) {
               <Link
                 href="/"
                 aria-current={mode === "unlimited" ? "page" : undefined}
-                className={`rounded-full px-2 py-1 text-[0.65rem] font-semibold transition-colors sm:px-3 sm:py-1.5 sm:text-xs ${
+                className={`rounded-full px-2.5 py-1.5 text-xs font-semibold transition-colors sm:px-3.5 sm:py-2 sm:text-sm ${
                   mode === "unlimited" ? "bg-white text-[#33397d]" : "text-white/70 hover:text-white"
                 }`}
               >
@@ -281,7 +281,7 @@ export function GameScreen({ mode, customPuzzle }: GameScreenProps) {
               <Link
                 href="/daily"
                 aria-current={mode === "daily" ? "page" : undefined}
-                className={`rounded-full px-2 py-1 text-[0.65rem] font-semibold transition-colors sm:px-3 sm:py-1.5 sm:text-xs ${
+                className={`rounded-full px-2.5 py-1.5 text-xs font-semibold transition-colors sm:px-3.5 sm:py-2 sm:text-sm ${
                   mode === "daily" ? "bg-white text-[#33397d]" : "text-white/70 hover:text-white"
                 }`}
               >
