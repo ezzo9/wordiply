@@ -346,7 +346,7 @@ export function GameScreen({ mode, customPuzzle }: GameScreenProps) {
               readOnly={isMobile}
               inputMode={isMobile ? "none" : undefined}
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={(e) => setInput(e.target.value.replace(/[^a-zA-Z]/g, ""))}
               placeholder={`A word containing "${puzzle.starter}"`}
               className={`w-full bg-transparent text-lg font-normal caret-transparent outline-none placeholder:text-white/50 sm:text-xl ${
                 input.length > 0 ? "text-transparent" : "text-white"
