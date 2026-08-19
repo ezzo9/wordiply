@@ -20,11 +20,13 @@ import { Button } from "./Button";
 import { ConfirmModal } from "./ConfirmModal";
 import { GuessRow } from "./GuessRow";
 import { HowToPlayModal } from "./HowToPlayModal";
+import { MobileKeyboard } from "./MobileKeyboard";
 import { Modal } from "./Modal";
 import { ResultsScreen } from "./ResultsScreen";
 import { Tile } from "./Tile";
 import { TypingPreview } from "./TypingPreview";
 import { useFitTileSize } from "./useFitTileSize";
+import { useIsMobile } from "./useIsMobile";
 
 // Matches the starter tiles' fixed "sm" size (32px) — guess rows share one
 // tile size (sized to fit the longest current guess) instead of each row
@@ -163,6 +165,8 @@ export function GameScreen({ mode, customPuzzle }: GameScreenProps) {
   const [showHowToPlay, setShowHowToPlay] = useState(false);
   const [showRevealConfirm, setShowRevealConfirm] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const isMobile = useIsMobile();
   const longestGuessLength = gameState?.guesses.reduce((max, g) => Math.max(max, g.length), 1) ?? 1;
   const { containerRef: guessesContainerRef, tilePx: sharedGuessTilePx } = useFitTileSize(
     longestGuessLength,
@@ -203,6 +207,20 @@ export function GameScreen({ mode, customPuzzle }: GameScreenProps) {
     }
   }
 
+  // Mobile's custom on-screen keyboard writes into the same `input` state
+  // the real (read-only there) input displays — see MobileKeyboard below.
+  function handleLetterPress(letter: string) {
+    setInput((prev) => prev + letter);
+  }
+
+  function handleBackspace() {
+    setInput((prev) => prev.slice(0, -1));
+  }
+
+  function handleEnterPress() {
+    formRef.current?.requestSubmit();
+  }
+
   function handleReveal() {
     if (!gameState || gameState.guesses.length === 0) {
       setPhase("results");
@@ -230,7 +248,7 @@ export function GameScreen({ mode, customPuzzle }: GameScreenProps) {
   const { puzzle, guesses } = gameState;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 pb-44 sm:pb-0">
       {/* Sticky on mobile so the logo/header and the starter fragment both
           stay visible when tapping the guess input scrolls the page to
           clear the on-screen keyboard — otherwise the very thing you're
@@ -296,12 +314,14 @@ export function GameScreen({ mode, customPuzzle }: GameScreenProps) {
         ))}
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+      <form ref={formRef} onSubmit={handleSubmit} className="flex flex-col gap-2">
         <label htmlFor="guess-input" className="sr-only">
           Your guess
         </label>
         <div
-          onClick={() => inputRef.current?.focus()}
+          onClick={() => {
+            if (!isMobile) inputRef.current?.focus();
+          }}
           className="flex cursor-text items-center gap-2 border-b-2 border-white/30 py-2 focus-within:border-white"
         >
           <div className="relative min-w-0 flex-1 overflow-hidden">
@@ -318,7 +338,9 @@ export function GameScreen({ mode, customPuzzle }: GameScreenProps) {
               autoCapitalize="off"
               autoCorrect="off"
               spellCheck={false}
-              autoFocus
+              autoFocus={!isMobile}
+              readOnly={isMobile}
+              inputMode={isMobile ? "none" : undefined}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder={`A word containing "${puzzle.starter}"`}
@@ -414,6 +436,15 @@ export function GameScreen({ mode, customPuzzle }: GameScreenProps) {
             </p>
           ))}
         </div>
+      )}
+
+      {phase === "playing" && (
+        <MobileKeyboard
+          onLetter={handleLetterPress}
+          onBackspace={handleBackspace}
+          onEnter={handleEnterPress}
+          enterDisabled={!dictionary || guesses.length >= MAX_GUESSES}
+        />
       )}
     </div>
   );
