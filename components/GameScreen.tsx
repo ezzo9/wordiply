@@ -268,11 +268,11 @@ export function GameScreen({ mode, customPuzzle }: GameScreenProps) {
               Custom puzzle
             </span>
           ) : (
-            <div className="inline-flex shrink-0 items-center gap-0.5 rounded-full bg-white/10 p-0.5 sm:gap-1 sm:p-1">
+            <div className="inline-flex shrink-0 items-center gap-1 rounded-full bg-white/10 p-1">
               <Link
                 href="/"
                 aria-current={mode === "unlimited" ? "page" : undefined}
-                className={`rounded-full px-2.5 py-1.5 text-xs font-semibold transition-colors sm:px-3.5 sm:py-2 sm:text-sm ${
+                className={`rounded-full px-3.5 py-2 text-sm font-semibold transition-colors sm:px-3.5 sm:py-2 sm:text-sm ${
                   mode === "unlimited" ? "bg-white text-[#33397d]" : "text-white/70 hover:text-white"
                 }`}
               >
@@ -281,7 +281,7 @@ export function GameScreen({ mode, customPuzzle }: GameScreenProps) {
               <Link
                 href="/daily"
                 aria-current={mode === "daily" ? "page" : undefined}
-                className={`rounded-full px-2.5 py-1.5 text-xs font-semibold transition-colors sm:px-3.5 sm:py-2 sm:text-sm ${
+                className={`rounded-full px-3.5 py-2 text-sm font-semibold transition-colors sm:px-3.5 sm:py-2 sm:text-sm ${
                   mode === "daily" ? "bg-white text-[#33397d]" : "text-white/70 hover:text-white"
                 }`}
               >
