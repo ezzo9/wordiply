@@ -3,7 +3,7 @@ const ROW_2 = "ASDFGHJKL".split("");
 const ROW_3 = "ZXCVBNM".split("");
 
 const KEY_BASE =
-  "flex h-[4.25rem] items-center justify-center rounded-lg text-xl font-semibold shadow-sm active:brightness-90 select-none";
+  "flex h-11 items-center justify-center rounded-md text-sm font-semibold shadow-sm active:brightness-90 select-none";
 
 function LetterKey({ letter, onPress }: { letter: string; onPress: (letter: string) => void }) {
   return (
@@ -36,11 +36,11 @@ export function MobileKeyboard({
 }) {
   return (
     <div
-      className="fixed inset-x-0 bottom-0 z-20 border-t border-white/10 bg-[#33397d] pb-[max(env(safe-area-inset-bottom),1rem)] pt-3 sm:hidden"
+      className="fixed inset-x-0 bottom-0 z-20 border-t border-white/10 bg-[#33397d] pb-[max(env(safe-area-inset-bottom),0.5rem)] pt-2 sm:hidden"
       role="group"
       aria-label="On-screen keyboard"
     >
-      <div className="mx-auto flex max-w-md flex-col gap-2.5 px-1.5">
+      <div className="mx-auto flex max-w-md flex-col gap-1.5 px-1.5">
         <div className="flex gap-1.5">
           {ROW_1.map((letter) => (
             <LetterKey key={letter} letter={letter} onPress={onLetter} />
@@ -56,7 +56,7 @@ export function MobileKeyboard({
             type="button"
             onClick={onEnter}
             disabled={enterDisabled}
-            className={`${KEY_BASE} min-w-0 flex-[1.6] bg-brand-600 text-base text-white disabled:opacity-50`}
+            className={`${KEY_BASE} min-w-0 flex-[1.6] bg-brand-600 text-xs text-white disabled:opacity-50`}
           >
             ENTER
           </button>
@@ -67,7 +67,7 @@ export function MobileKeyboard({
             type="button"
             onClick={onBackspace}
             aria-label="Backspace"
-            className={`${KEY_BASE} min-w-0 flex-[1.6] bg-white/20 text-2xl text-white`}
+            className={`${KEY_BASE} min-w-0 flex-[1.6] bg-white/20 text-base text-white`}
           >
             ⌫
           </button>

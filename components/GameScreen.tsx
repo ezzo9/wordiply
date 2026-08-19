@@ -248,7 +248,7 @@ export function GameScreen({ mode, customPuzzle }: GameScreenProps) {
   const { puzzle, guesses } = gameState;
 
   return (
-    <div className="flex flex-col gap-4 pb-64 sm:pb-0">
+    <div className="flex flex-col gap-4 pb-44 sm:pb-0">
       {/* Sticky on mobile so the logo/header and the starter fragment both
           stay visible when tapping the guess input scrolls the page to
           clear the on-screen keyboard — otherwise the very thing you're
