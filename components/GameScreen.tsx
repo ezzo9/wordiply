@@ -266,10 +266,17 @@ export function GameScreen({ mode, customPuzzle }: GameScreenProps) {
         )}
       </div>
 
-      <div className="mt-4 flex flex-wrap justify-center gap-1">
-        {puzzle.starter.split("").map((letter, i) => (
-          <Tile key={i} letter={letter} size="sm" variant="starter" heavy />
-        ))}
+      {/* Sticky on mobile so the starter fragment stays visible when tapping
+          the guess input scrolls the page to clear the on-screen keyboard —
+          otherwise the very thing you're typing toward gets pushed off
+          screen. Reverts to normal flow above the sm breakpoint, where
+          on-screen keyboards aren't a factor. */}
+      <div className="sticky top-0 z-10 -mx-6 bg-background px-6 pb-2 pt-3 sm:static sm:z-auto sm:mx-0 sm:bg-transparent sm:px-0 sm:pb-0 sm:pt-0">
+        <div className="mt-4 flex flex-wrap justify-center gap-1 sm:mt-0">
+          {puzzle.starter.split("").map((letter, i) => (
+            <Tile key={i} letter={letter} size="sm" variant="starter" heavy />
+          ))}
+        </div>
       </div>
 
       <div
