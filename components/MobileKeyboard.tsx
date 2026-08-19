@@ -3,7 +3,7 @@ const ROW_2 = "ASDFGHJKL".split("");
 const ROW_3 = "ZXCVBNM".split("");
 
 const KEY_BASE =
-  "flex h-11 items-center justify-center rounded-md text-sm font-semibold shadow-sm active:brightness-90 select-none";
+  "flex h-11 items-center justify-center rounded-md text-base font-semibold shadow-sm active:brightness-90 select-none";
 
 function LetterKey({ letter, onPress }: { letter: string; onPress: (letter: string) => void }) {
   return (
