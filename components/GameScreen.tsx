@@ -236,7 +236,11 @@ export function GameScreen({ mode, customPuzzle }: GameScreenProps) {
     setInput("");
     setError(null);
     setPhase("playing");
-    inputRef.current?.focus();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    // preventScroll so the browser's own focus-driven scroll doesn't fight
+    // the scrollTo above (e.g. re-scrolling down to bring the input into
+    // view right after we just scrolled up).
+    inputRef.current?.focus({ preventScroll: true });
   }
 
   // Only unlimited mode ever sees this, and only for the brief instant
