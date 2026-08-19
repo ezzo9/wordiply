@@ -231,48 +231,49 @@ export function GameScreen({ mode, customPuzzle }: GameScreenProps) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between gap-2 border-b border-white/20 pb-4">
-        <div className="min-w-0 shrink-0">
-          <h1 className="sr-only">{MODE_HEADING[mode]}</h1>
-          <div aria-hidden="true">
-            <HeaderWordmark />
-          </div>
-        </div>
-        {mode === "custom" ? (
-          <span className="shrink-0 rounded-full bg-white/10 px-3 py-1 text-[0.65rem] font-semibold text-white/70 sm:px-4 sm:py-1.5 sm:text-xs">
-            Custom puzzle
-          </span>
-        ) : (
-          <div className="inline-flex shrink-0 items-center gap-0.5 rounded-full bg-white/10 p-0.5 sm:gap-1 sm:p-1">
-            <Link
-              href="/"
-              aria-current={mode === "unlimited" ? "page" : undefined}
-              className={`rounded-full px-2 py-1 text-[0.65rem] font-semibold transition-colors sm:px-3 sm:py-1.5 sm:text-xs ${
-                mode === "unlimited" ? "bg-white text-[#33397d]" : "text-white/70 hover:text-white"
-              }`}
-            >
-              Unlimited
-            </Link>
-            <Link
-              href="/daily"
-              aria-current={mode === "daily" ? "page" : undefined}
-              className={`rounded-full px-2 py-1 text-[0.65rem] font-semibold transition-colors sm:px-3 sm:py-1.5 sm:text-xs ${
-                mode === "daily" ? "bg-white text-[#33397d]" : "text-white/70 hover:text-white"
-              }`}
-            >
-              Daily
-            </Link>
-          </div>
-        )}
-      </div>
-
-      {/* Sticky on mobile so the starter fragment stays visible when tapping
-          the guess input scrolls the page to clear the on-screen keyboard —
-          otherwise the very thing you're typing toward gets pushed off
-          screen. Reverts to normal flow above the sm breakpoint, where
-          on-screen keyboards aren't a factor. */}
+      {/* Sticky on mobile so the logo/header and the starter fragment both
+          stay visible when tapping the guess input scrolls the page to
+          clear the on-screen keyboard — otherwise the very thing you're
+          typing toward gets pushed off screen. Reverts to normal flow
+          above the sm breakpoint, where on-screen keyboards aren't a
+          factor. */}
       <div className="sticky top-0 z-10 -mx-6 bg-background px-6 pb-2 pt-3 sm:static sm:z-auto sm:mx-0 sm:bg-transparent sm:px-0 sm:pb-0 sm:pt-0">
-        <div className="mt-4 flex flex-wrap justify-center gap-1 sm:mt-0">
+        <div className="flex items-center justify-between gap-2 border-b border-white/20 pb-4">
+          <div className="min-w-0 shrink-0">
+            <h1 className="sr-only">{MODE_HEADING[mode]}</h1>
+            <div aria-hidden="true">
+              <HeaderWordmark />
+            </div>
+          </div>
+          {mode === "custom" ? (
+            <span className="shrink-0 rounded-full bg-white/10 px-3 py-1 text-[0.65rem] font-semibold text-white/70 sm:px-4 sm:py-1.5 sm:text-xs">
+              Custom puzzle
+            </span>
+          ) : (
+            <div className="inline-flex shrink-0 items-center gap-0.5 rounded-full bg-white/10 p-0.5 sm:gap-1 sm:p-1">
+              <Link
+                href="/"
+                aria-current={mode === "unlimited" ? "page" : undefined}
+                className={`rounded-full px-2 py-1 text-[0.65rem] font-semibold transition-colors sm:px-3 sm:py-1.5 sm:text-xs ${
+                  mode === "unlimited" ? "bg-white text-[#33397d]" : "text-white/70 hover:text-white"
+                }`}
+              >
+                Unlimited
+              </Link>
+              <Link
+                href="/daily"
+                aria-current={mode === "daily" ? "page" : undefined}
+                className={`rounded-full px-2 py-1 text-[0.65rem] font-semibold transition-colors sm:px-3 sm:py-1.5 sm:text-xs ${
+                  mode === "daily" ? "bg-white text-[#33397d]" : "text-white/70 hover:text-white"
+                }`}
+              >
+                Daily
+              </Link>
+            </div>
+          )}
+        </div>
+
+        <div className="mt-4 flex flex-wrap justify-center gap-1 sm:mt-4">
           {puzzle.starter.split("").map((letter, i) => (
             <Tile key={i} letter={letter} size="sm" variant="starter" heavy />
           ))}
