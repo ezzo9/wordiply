@@ -261,26 +261,38 @@ function makePronounceabilityChecker(words: string[]) {
     );
   }
 
+  const sameClass = (a: string, b: string) => VOWELS.has(a) === VOWELS.has(b);
+
   return function isPronounceable(fragment: string): boolean {
-    // Generic interior check: any 3+ consonant run anywhere must be a
+    // Generic interior check: any 3+ letter run of a single class — all
+    // consonants, OR all vowels — anywhere in the fragment must be a
     // phonotactically plausible English cluster (starts or ends *some*
-    // real word — direction doesn't matter here, just plausibility).
+    // real word — direction doesn't matter here, just plausibility). This
+    // catches consonant gibberish ("ssf", only glued together by a suffix)
+    // and vowel gibberish the same way: "eei" only ever occurs mid-word
+    // (e.g. "fr-eei-ng"), never as how any real word actually starts or
+    // ends, so as an isolated puzzle fragment it reads as pure nonsense.
     for (let i = 0; i + 3 <= fragment.length; i++) {
       const window = fragment.slice(i, i + 3);
-      const allConsonants = window.split("").every((ch) => !VOWELS.has(ch));
-      if (allConsonants && !isNaturalCluster(window)) return false;
+      const chars = window.split("");
+      const uniformClass =
+        chars.every((ch) => !VOWELS.has(ch)) || chars.every((ch) => VOWELS.has(ch));
+      if (uniformClass && !isNaturalCluster(window)) return false;
     }
 
-    // Edge-specific check: the fragment's *own* leading/trailing consonant
-    // run must be a common word-start/word-end respectively — this is what
-    // catches "llie" (leading "ll" is a real cluster in general, per the
-    // check above via words like "ball"/"call", but essentially never
-    // *starts* a word). Only applies when a vowel elsewhere in the fragment
-    // actually marks that run as "the leading part" / "the trailing part" —
-    // an all-consonant fragment like "str" has no such distinction (it's
-    // simultaneously both), and is already covered by the generic check above.
+    // Edge-specific check: the fragment's *own* leading/trailing run of a
+    // single class (2+ letters, consonant or vowel) must be a common
+    // word-start/word-end respectively — this is what catches "llie"
+    // (leading "ll" is a real cluster in general, per the check above via
+    // words like "ball"/"call", but essentially never *starts* a word) and
+    // equally a leading/trailing vowel run that's real mid-word but never
+    // how a word actually begins or ends. Only applies when a letter of the
+    // *other* class elsewhere in the fragment actually marks that run as
+    // "the leading part" / "the trailing part" — a fragment that's a single
+    // uniform class all the way through (like "eei") has no such distinction
+    // and is already covered by the generic check above.
     let leadEnd = 0;
-    while (leadEnd < fragment.length && !VOWELS.has(fragment[leadEnd])) leadEnd++;
+    while (leadEnd < fragment.length && sameClass(fragment[leadEnd], fragment[0])) leadEnd++;
     if (
       leadEnd >= 2 &&
       leadEnd < fragment.length &&
@@ -290,7 +302,12 @@ function makePronounceabilityChecker(words: string[]) {
     }
 
     let trailStart = fragment.length;
-    while (trailStart > 0 && !VOWELS.has(fragment[trailStart - 1])) trailStart--;
+    while (
+      trailStart > 0 &&
+      sameClass(fragment[trailStart - 1], fragment[fragment.length - 1])
+    ) {
+      trailStart--;
+    }
     const trailLen = fragment.length - trailStart;
     if (
       trailLen >= 2 &&
