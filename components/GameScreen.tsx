@@ -248,7 +248,7 @@ export function GameScreen({ mode, customPuzzle }: GameScreenProps) {
   const { puzzle, guesses } = gameState;
 
   return (
-    <div className="flex flex-col gap-4 pb-56 sm:pb-0">
+    <div className="flex flex-col gap-4 pb-64 sm:pb-0">
       {/* Sticky on mobile so the logo/header and the starter fragment both
           stay visible when tapping the guess input scrolls the page to
           clear the on-screen keyboard — otherwise the very thing you're
@@ -301,7 +301,13 @@ export function GameScreen({ mode, customPuzzle }: GameScreenProps) {
       <div
         ref={guessesContainerRef}
         className="flex flex-col justify-start gap-2"
-        style={{ minHeight: GUESSES_AREA_MIN_HEIGHT_PX }}
+        // On mobile the fixed on-screen keyboard already eats a large chunk
+        // of vertical space, so pre-reserving room for all 5 guesses before
+        // any exist would push the input row (and Submit/Reveal) behind it,
+        // out of view. Skip the reservation there — the layout just grows
+        // as guesses come in instead — and keep it on desktop, where there's
+        // no keyboard competing for space and the no-shift layout is nicer.
+        style={{ minHeight: isMobile ? undefined : GUESSES_AREA_MIN_HEIGHT_PX }}
       >
         {guesses.map((guess) => (
           <GuessRow
