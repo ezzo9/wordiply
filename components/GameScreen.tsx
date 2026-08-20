@@ -7,9 +7,11 @@ import {
   PUZZLES,
   computeScore,
   createGameState,
+  getCompletedDailyState,
   getDailyPuzzle,
   getUnlimitedPuzzle,
   loadDictionary,
+  markDailyCompleted,
   markPuzzlePlayed,
   submitGuess,
   type GameState,
@@ -184,10 +186,35 @@ export function GameScreen({ mode, customPuzzle }: GameScreenProps) {
   }, []);
 
   useEffect(() => {
+    if (mode !== "daily") return;
+    // localStorage isn't available during the initial (server-matching)
+    // render, so this has to be an effect rather than part of the useState
+    // initializer above — same reason the unlimited-mode pick above is one.
+    // If today's daily was already finished (guessed out or revealed),
+    // jump straight to that result instead of handing back a fresh attempt.
+    const completed = getCompletedDailyState(PUZZLES);
+    if (completed) {
+      setGameState(completed);
+      setPhase("results");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     loadDictionary()
       .then(setDictionary)
       .catch(() => setDictionaryError(true));
   }, []);
+
+  // Persists a finished daily round so returning to /daily later (even
+  // after a full reload) shows this result instead of a fresh attempt —
+  // see getCompletedDailyState / the mount effect above. No-op for every
+  // other mode.
+  function finishDailyIfNeeded(finalGuesses: string[]) {
+    if (mode === "daily" && gameState) {
+      markDailyCompleted(gameState.puzzle.id, finalGuesses);
+    }
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -203,6 +230,7 @@ export function GameScreen({ mode, customPuzzle }: GameScreenProps) {
     setInput("");
     setGameState(nextState);
     if (nextState.guesses.length >= MAX_GUESSES) {
+      finishDailyIfNeeded(nextState.guesses);
       setPhase("results");
     }
   }
@@ -223,6 +251,7 @@ export function GameScreen({ mode, customPuzzle }: GameScreenProps) {
 
   function handleReveal() {
     if (!gameState || gameState.guesses.length === 0) {
+      finishDailyIfNeeded(gameState?.guesses ?? []);
       setPhase("results");
       return;
     }
@@ -414,6 +443,7 @@ export function GameScreen({ mode, customPuzzle }: GameScreenProps) {
           confirmLabel="Reveal"
           onConfirm={() => {
             setShowRevealConfirm(false);
+            finishDailyIfNeeded(gameState.guesses);
             setPhase("results");
           }}
           onCancel={() => setShowRevealConfirm(false)}
